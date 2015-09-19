@@ -2,11 +2,39 @@ extern crate rand;
 
 use rand::Rng;
 
+#[macro_use]
+extern crate clap;
+
+use clap::{App, Arg};
+
 fn main() {
+    let matches = App::new("names")
+        .version(&crate_version!()[..])
+        .author("Fletcher Nichol <fnichol@nichol.ca>")
+        .about("Random name generator")
+        .arg(Arg::with_name("AMOUNT")
+             .help("Number of names to generate (default: 1)")
+             .index(1)
+        )
+        .arg(Arg::with_name("number")
+             .short("n")
+             .long("number")
+             .help("Adds a random number to the name(s)")
+        )
+        .get_matches();
+
+    let amount      = value_t!(matches.value_of("AMOUNT"), u32).unwrap_or(1);
     let adjectives  = Dict::new(ADJECTIVE_WORDS);
     let nouns       = Dict::new(NOUN_WORDS);
 
-    println!("{}-{}", adjectives.random(), nouns.random());
+    for _ in 0..amount {
+        if matches.is_present("number") {
+            let number = rand::thread_rng().gen_range(1, 10000);
+            println!("{}-{}-{:04}", adjectives.random(), nouns.random(), number);
+        } else {
+            println!("{}-{}", adjectives.random(), nouns.random());
+        }
+    }
 }
 
 struct Dict<'a> {
