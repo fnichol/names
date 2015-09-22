@@ -1,0 +1,12 @@
+[package]
+name = "names-cli"
+version = "0.1.0"
+authors = ["Fletcher Nichol <fnichol@nichol.ca>"]
+
+[[bin]]
+name = "names"
+
+[dependencies]
+# pending a release which includes https://github.com/kbknapp/clap-rs/pull/257
+clap = { git = "https://github.com/kbknapp/clap-rs", rev = "40104af" }
+names = { path = ".." }
