@@ -31,7 +31,7 @@
 //!
 //! let mut generator = Generator::default(Name::Plain);
 //! println!("Your project is: {}", generator.next().unwrap());
-//! // #=> "rusty-nail"
+//! // #=> "Your project is: rusty-nail"
 //! ```
 //!
 //! If more randomness is required, you can generate a name with a trailing
@@ -42,7 +42,7 @@
 //!
 //! let mut generator = Generator::default(Name::Numbered);
 //! println!("Your project is: {}", generator.next().unwrap());
-//! // #=> "pushy-pencil-5602"
+//! // #=> "Your project is: pushy-pencil-5602"
 //! ```
 //!
 //! # Example: with custom dictionaries
