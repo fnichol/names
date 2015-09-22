@@ -4,7 +4,7 @@
 
 Random name generator for Rust
 
-* Crate: https://crates.io/crates/libc
+* Crate: https://crates.io/crates/names
 * Documentation http://fnichol.github.io/names/names/
 * Source Code: https://github.com/fnichol/names
 
