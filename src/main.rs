@@ -2,7 +2,7 @@
 extern crate names;
 
 use clap::{App, Arg};
-use names::Generator;
+use names::{Generator, Name};
 
 fn main() {
     let matches = App::new("names")
@@ -20,14 +20,15 @@ fn main() {
         )
         .get_matches();
 
-    let amount = value_t!(matches.value_of("AMOUNT"), u32).unwrap_or(1);
-    let gen = Generator::default();
+    let amount = value_t!(matches.value_of("AMOUNT"), usize).unwrap_or(1);
+    let naming = if matches.is_present("number") {
+        Name::Numbered
+    } else {
+        Name::Plain
+    };
 
+    let mut generator = Generator::default(naming);
     for _ in 0..amount {
-        if matches.is_present("number") {
-            println!("{}", gen.name_with_number());
-        } else {
-            println!("{}", gen.name());
-        }
+        println!("{}", generator.next().unwrap());
     }
 }

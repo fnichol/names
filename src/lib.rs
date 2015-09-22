@@ -1,6 +1,9 @@
 //! This crate provides a generate that constructs random name strings suitable
 //! for use in container instances, project names, application instances, etc.
 //!
+//! The name `Generator` implements the `Iterator` trait so it can be used with
+//! adapters, consumers, and in loops.
+//!
 //! # Usage
 //!
 //! This crate is [on crates.io](https://crates.io/crates/names) and can be
@@ -24,10 +27,10 @@
 //! a name:
 //!
 //! ```
-//! use names::Generator;
+//! use names::{Generator, Name};
 //!
-//! let generator = Generator::default();
-//! println!("Your project is: {}", generator.name());
+//! let mut generator = Generator::default(Name::Plain);
+//! println!("Your project is: {}", generator.next().unwrap());
 //! // #=> "rusty-nail"
 //! ```
 //!
@@ -35,29 +38,27 @@
 //! 4-digit number:
 //!
 //! ```
-//! use names::Generator;
+//! use names::{Generator, Name};
 //!
-//! let generator = Generator::default();
-//! println!("Your project is: {}", generator.name_with_number());
+//! let mut generator = Generator::default(Name::Numbered);
+//! println!("Your project is: {}", generator.next().unwrap());
 //! // #=> "pushy-pencil-5602"
 //! ```
 //!
 //! # Example: with custom dictionaries
 //!
 //! If you would rather supply your own custom adjective and noun word lists,
-//! you can provide your own by supplying 2 `Dictionary` structs. For example,
+//! you can provide your own by supplying 2 string slices. For example,
 //! this returns only one result:
 //!
 //! ```
-//! use names::{Dictionary, Generator};
+//! use names::{Generator, Name};
 //!
 //! let adjectives = &["imaginary"];
 //! let nouns = &["roll"];
-//! let generator = Generator::new(
-//!     Dictionary::new(adjectives),
-//!     Dictionary::new(nouns));
+//! let mut generator = Generator::new(adjectives, nouns, Name::Plain);
 //!
-//! assert_eq!("imaginary-roll", generator.name());
+//! assert_eq!("imaginary-roll", generator.next().unwrap());
 //! ```
 
 extern crate rand;
@@ -67,77 +68,94 @@ use rand::Rng;
 mod adjectives;
 mod nouns;
 
-/// A `Dictionary` is collection of words.
-pub struct Dictionary<'a> {
-    words: &'a [&'a str],
-}
-
-impl<'a> Dictionary<'a> {
-    pub fn new(words: &'a [&'a str]) -> Dictionary<'a> {
-        Dictionary { words: words }
-    }
-
-    pub fn random(&self) -> &str {
-        rand::thread_rng().choose(self.words).unwrap()
-    }
+/// A naming strategy for the `Generator`
+pub enum Name {
+    /// This represents a plain naming strategy of the form `"ADJECTIVE-NOUN"`
+    Plain,
+    /// This represents a naming strategy with a random number appended to the
+    /// end, of the form `"ADJECTIVE-NOUN-NUMBER"`
+    Numbered
 }
 
 /// A random name generator which combines an adjective, a noun, and an
-/// optional number.
+/// optional number
 ///
-/// A `Generator` takes a `Dictionary` of adjectives and a `Dictionary` of
-/// nouns.
+/// A `Generator` takes a slice of adjective and noun words strings and has
+/// a naming strategy (with or without a number appended).
 pub struct Generator<'a> {
-    adjectives: Dictionary<'a>,
-    nouns: Dictionary<'a>,
+    adjectives: &'a [&'static str],
+    nouns: &'a [&'static str],
+    naming: Name,
 }
 
 impl<'a> Generator<'a> {
-    /// Constructs a new `Generator<'a>`.
+    /// Constructs a new `Generator<'a>`
     ///
     /// # Examples
     ///
     /// ```
-    /// use names::{Dictionary, Generator};
+    /// use names::{Generator, Name};
     ///
-    /// let adjective_words = &["sassy"];
-    /// let noun_words = &["clocks"];
+    /// let adjectives = &["sassy"];
+    /// let nouns = &["clocks"];
+    /// let naming = Name::Plain;
     ///
-    /// let adjectives = Dictionary::new(adjective_words);
-    /// let nouns = Dictionary::new(noun_words);
+    /// let mut generator = Generator::new(adjectives, nouns, naming);
     ///
-    /// let generator = Generator::new(adjectives, nouns);
-    ///
-    /// assert_eq!("sassy-clocks", generator.name());
+    /// assert_eq!("sassy-clocks", generator.next().unwrap());
     /// ```
-    pub fn new(adjectives: Dictionary<'a>, nouns: Dictionary<'a>) -> Generator<'a> {
-        Generator { adjectives: adjectives, nouns: nouns }
+    pub fn new(
+        adjectives: &'a [&'static str],
+        nouns: &'a [&'static str],
+        naming: Name
+    ) -> Generator<'a> {
+        Generator {
+            adjectives: adjectives,
+            nouns: nouns,
+            naming: naming,
+        }
     }
 
     /// Construct and returns a default `Generator<'a>` containing a large
-    /// collection of adjectives and nouns.
+    /// collection of adjectives and nouns
     ///
     /// ```
-    /// use names::Generator;
+    /// use names::{Generator, Name};
     ///
-    /// let generator = Generator::default();
+    /// let mut generator = Generator::default(Name::Plain);
     ///
-    /// println!("My new name is: {}", generator.name());
+    /// println!("My new name is: {}", generator.next().unwrap());
     /// ```
-    pub fn default() -> Generator<'a> {
+    pub fn default(naming: Name) -> Generator<'a> {
         Generator::new(
-            Dictionary::new(adjectives::LIST),
-            Dictionary::new(nouns::LIST))
+            adjectives::LIST,
+            nouns::LIST,
+            naming)
     }
 
-    pub fn name(&self) -> String {
-        format!("{}-{}", self.adjectives.random(), self.nouns.random())
+    fn rand_adj(&self) -> &str {
+        rand::thread_rng().choose(self.adjectives).unwrap()
     }
 
-    pub fn name_with_number(&self) -> String {
-        format!("{}-{}-{:04}",
-                self.adjectives.random(),
-                self.nouns.random(),
-                rand::thread_rng().gen_range(1, 10000))
+    fn rand_noun(&self) -> &str {
+        rand::thread_rng().choose(self.nouns).unwrap()
+    }
+
+    fn rand_num(&self) -> u16 {
+        rand::thread_rng().gen_range(1, 10000)
+    }
+}
+
+impl<'a> Iterator for Generator<'a> {
+    type Item = String;
+
+    fn next(&mut self) -> Option<String> {
+        let adj = self.rand_adj();
+        let noun = self.rand_noun();
+
+        Some(match self.naming {
+            Name::Plain => format!("{}-{}", adj, noun),
+            Name::Numbered => format!("{}-{}-{:04}", adj, noun, self.rand_num()),
+        })
     }
 }
