@@ -1,7 +1,16 @@
 [package]
 name = "names"
-version = "0.1.0"
+version = "0.9.0"
 authors = ["Fletcher Nichol <fnichol@nichol.ca>"]
+license = "MIT/Apache-2.0"
+readme = "README.md"
+repository = "https://github.com/fnichol/names.git"
+homepage = "https://github.com/fnichol/names.git"
+keywords = ["name", "random"]
+description = """
+A library to generate random name strings suitable for use in container
+instances, project names, application instances, etc.
+"""
 
 [lib]
 name = "names"
