@@ -12,4 +12,16 @@ matrix:
 script:
   - cargo build --verbose
   - cargo test --verbose
-  - (cd cli && cargo build --verbose)
+  - cargo doc --verbose
+  - "(cd cli && cargo build --verbose)"
+
+after_success: |
+  [ $TRAVIS_BRANCH = master ] &&
+  [ $TRAVIS_PULL_REQUEST = false ] &&
+  pip install ghp-import --user $USER &&
+  $HOME/.local/bin/ghp-import -n target/doc &&
+  git push -fq https://${TOKEN}@github.com/${TRAVIS_REPO_SLUG}.git gh-pages
+
+env:
+  global:
+    secure: B6wLsR6HDHo/VhjM2azghFJ66PZIyNyDDfly4FT0P9UmmHEwdM1mk3YWlNx9NT2s8jp9I+wChYehPeWjCTd8QHVyYgvKS0FdHFNZDMTBE306q6fjQgMxLXsLINkc4U2+b3JUjx/lyAzvVjNIO53KXq+ydWXbrHEWIKTvzkm5o7zNNJQ2ZHMQm6SlJVY++x439PMMPTp9KZWYcwroNrpf+cUdMbvVhF7DA/5SysJpXDL4Y7KC7kzyOXdZPOhW4qK1FNKCmIB7t1OwgMXS8/b260nvAKPRUCA7IodRdogBieDEZ3CW5qhiT/kUgWC3aRgpS9nhiv3YLbArR5bv3IO2s8t2w34A4TJl5NcTMzW2PZQSniGxhX4CA2gQJHa3QlVxZkOXDATJkZeqtoB7vY6Amf/Gv8pZoMnz5OlKqbkAy8iRhtgTczEfG91C6jxY5FLixo/g3ccZoOK5Fy9O+CI8VNp7DAlMSK2+NZVdIDNhuRgGFxT6HMQCeo65tgdWAwIigR6D58cO4sLbh8TvQL7vzNOtfvZ8IZKVSIOMb4KDxAzKShq3m3P7XOWQUt2DuhpYiT4PdcyVqoQUrUmSp1M6mulglefSqVuyv4h7vUAGzmLgcO4lpZy69452JfvphRAYOniWvXZA5HKCVWZCjBy9H+/szQqeJ445pVlsZMUQAUQ=
