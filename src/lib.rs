@@ -12,7 +12,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! names = "0.1.0"
+//! names = "0.9.0"
 //! ```
 //!
 //! and this to your crate root:
