@@ -2,7 +2,7 @@
 name = "names-cli"
 version = "0.9.0"
 dependencies = [
- "clap 1.4.0 (git+https://github.com/kbknapp/clap-rs?rev=40104af)",
+ "clap 1.4.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "names 0.9.0",
 ]
 
@@ -22,8 +22,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "clap"
-version = "1.4.0"
-source = "git+https://github.com/kbknapp/clap-rs?rev=40104af#40104afe9d124b658569656ca643dc0a9d813216"
+version = "1.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "ansi_term 0.6.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "strsim 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",

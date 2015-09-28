@@ -13,6 +13,5 @@ A program to generate random names that look like 'used-jellyfish'.
 name = "names"
 
 [dependencies]
-# pending a release which includes https://github.com/kbknapp/clap-rs/pull/257
-clap = { git = "https://github.com/kbknapp/clap-rs", rev = "40104af" }
+clap = "*"
 names = { path = ".." }
