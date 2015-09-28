@@ -7,9 +7,9 @@ use names::{Generator, Name};
 fn main() {
     let matches = App::new("names")
         .version(&crate_version!()[..])
-        .author("Fletcher Nichol <fnichol@nichol.ca>")
-        .about("Random name generator")
-        .arg(Arg::with_name("AMOUNT")
+        .author("\nAuthor: Fletcher Nichol <fnichol@nichol.ca>\n")
+        .about("A random name generator with results like `delirious-pail'.")
+        .arg(Arg::with_name("amount")
              .help("Number of names to generate (default: 1)")
              .index(1)
         )
@@ -20,7 +20,7 @@ fn main() {
         )
         .get_matches();
 
-    let amount = value_t!(matches.value_of("AMOUNT"), usize).unwrap_or(1);
+    let amount = value_t!(matches.value_of("amount"), usize).unwrap_or(1);
     let naming = if matches.is_present("number") {
         Name::Numbered
     } else {
