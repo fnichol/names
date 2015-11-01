@@ -21,13 +21,13 @@ fn main() {
         .get_matches();
 
     let amount = value_t!(matches.value_of("amount"), usize).unwrap_or(1);
-    let naming = if matches.is_present("number") {
+    let naming: Name = if matches.is_present("number") {
         Name::Numbered
     } else {
-        Name::Plain
+        Default::default()
     };
 
-    let mut generator = Generator::default(naming);
+    let mut generator = Generator::with_naming(naming);
     for _ in 0..amount {
         println!("{}", generator.next().unwrap());
     }

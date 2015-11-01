@@ -27,9 +27,9 @@
 //! a name:
 //!
 //! ```
-//! use names::{Generator, Name};
+//! use names::Generator;
 //!
-//! let mut generator = Generator::default(Name::Plain);
+//! let mut generator: Generator = Default::default();
 //! println!("Your project is: {}", generator.next().unwrap());
 //! // #=> "Your project is: rusty-nail"
 //! ```
@@ -40,7 +40,7 @@
 //! ```
 //! use names::{Generator, Name};
 //!
-//! let mut generator = Generator::default(Name::Numbered);
+//! let mut generator = Generator::with_naming(Name::Numbered);
 //! println!("Your project is: {}", generator.next().unwrap());
 //! // #=> "Your project is: pushy-pencil-5602"
 //! ```
@@ -52,11 +52,11 @@
 //! this returns only one result:
 //!
 //! ```
-//! use names::{Generator, Name};
+//! use names::Generator;
 //!
 //! let adjectives = &["imaginary"];
 //! let nouns = &["roll"];
-//! let mut generator = Generator::new(adjectives, nouns, Name::Plain);
+//! let mut generator = Generator::new(adjectives, nouns, Default::default());
 //!
 //! assert_eq!("imaginary-roll", generator.next().unwrap());
 //! ```
@@ -77,14 +77,18 @@ pub enum Name {
     Numbered
 }
 
+impl Default for Name {
+    fn default() -> Name { Name::Plain }
+}
+
 /// A random name generator which combines an adjective, a noun, and an
 /// optional number
 ///
 /// A `Generator` takes a slice of adjective and noun words strings and has
 /// a naming strategy (with or without a number appended).
 pub struct Generator<'a> {
-    adjectives: &'a [&'static str],
-    nouns: &'a [&'static str],
+    adjectives: &'a [&'a str],
+    nouns: &'a [&'a str],
     naming: Name,
 }
 
@@ -105,8 +109,8 @@ impl<'a> Generator<'a> {
     /// assert_eq!("sassy-clocks", generator.next().unwrap());
     /// ```
     pub fn new(
-        adjectives: &'a [&'static str],
-        nouns: &'a [&'static str],
+        adjectives: &'a [&'a str],
+        nouns: &'a [&'a str],
         naming: Name
     ) -> Generator<'a> {
         Generator {
@@ -122,11 +126,11 @@ impl<'a> Generator<'a> {
     /// ```
     /// use names::{Generator, Name};
     ///
-    /// let mut generator = Generator::default(Name::Plain);
+    /// let mut generator = Generator::with_naming(Name::Plain);
     ///
     /// println!("My new name is: {}", generator.next().unwrap());
     /// ```
-    pub fn default(naming: Name) -> Generator<'a> {
+    pub fn with_naming(naming: Name) -> Generator<'a> {
         Generator::new(
             adjectives::LIST,
             nouns::LIST,
@@ -143,6 +147,12 @@ impl<'a> Generator<'a> {
 
     fn rand_num(&self) -> u16 {
         rand::thread_rng().gen_range(1, 10000)
+    }
+}
+
+impl<'a> Default for Generator<'a> {
+    fn default() -> Generator<'a> {
+        Generator::new(adjectives::LIST, nouns::LIST, Default::default())
     }
 }
 
