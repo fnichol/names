@@ -13,5 +13,5 @@ A program to generate random names that look like 'used-jellyfish'.
 name = "names"
 
 [dependencies]
-clap = "*"
+clap = "~1.4"
 names = { path = ".." }
