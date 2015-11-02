@@ -1,6 +1,6 @@
 # names
 
-[![Build Status](https://travis-ci.org/fnichol/names.svg?branch=master)](https://travis-ci.org/fnichol/names) [![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/fnichol/names/blob/master/LICENSE-MIT)
+[![Build Status](https://travis-ci.org/fnichol/names.svg?branch=master)](https://travis-ci.org/fnichol/names) [![](http://meritbadge.herokuapp.com/names)](https://crates.io/crates/names) [![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/fnichol/names/blob/master/LICENSE-MIT)
 
 Random name generator for Rust
 
