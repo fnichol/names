@@ -16,7 +16,7 @@ file:
 
 ```toml
 [dependencies]
-names = "0.9.0"
+names = "0.10.0"
 ```
 
 and this to your crate root:
