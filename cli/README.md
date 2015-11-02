@@ -1,4 +1,6 @@
-# names
+# names - cli
+
+[![Build Status](https://travis-ci.org/fnichol/names.svg?branch=master)](https://travis-ci.org/fnichol/names) [![license](http://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/fnichol/names/blob/master/LICENSE-MIT)
 
 Random name generator tool that gives you Heroku or Docker-style names.
 
