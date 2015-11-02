@@ -33,10 +33,8 @@ pushd "$docker_context"
 
   cat <<_DOCKERFILE_ >Dockerfile
 FROM scratch
-MAINTAINER Fletcher Nichol <fnichol@nichol.ca>
 ADD names /names
 ENTRYPOINT ["/names"]
-CMD ["--help"]
 _DOCKERFILE_
 
   docker build -t "$repo:$VERSION" .
