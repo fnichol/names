@@ -99,15 +99,19 @@ This project was used by its author to experiment with producing static binaries
 ```sh
 > git clone https://github.com/fnichol/names.git
 > cd names
-> docker run --rm -ti -v `pwd`:/src -w /src/cli fnichol/rust:1.4.0-musl cargo build --release --target=x86_64-unknown-linux-musl
+> docker run --rm -ti -v `pwd`:/src -w /src/cli fnichol/rust:1.4.0-musl \
+    cargo build --release --target=x86_64-unknown-linux-musl
 
-> docker run --rm -ti -v `pwd`:/src fnichol/rust:1.4.0-musl du -h ./cli/target/x86_64-unknown-linux-musl/release/names
+> docker run --rm -ti -v `pwd`:/src fnichol/rust:1.4.0-musl \
+    du -h ./cli/target/x86_64-unknown-linux-musl/release/names
 1.5M    ./cli/target/x86_64-unknown-linux-musl/release/names
 
-> docker run --rm -ti -v `pwd`:/src fnichol/rust:1.4.0-musl ldd ./cli/target/x86_64-unknown-linux-musl/release/names
+> docker run --rm -ti -v `pwd`:/src fnichol/rust:1.4.0-musl \
+    ldd ./cli/target/x86_64-unknown-linux-musl/release/names
         not a dynamic executable
 
-> docker run --rm -ti -v `pwd`:/src fnichol/rust:1.4.0-musl file ./cli/target/x86_64-unknown-linux-musl/release/names
+> docker run --rm -ti -v `pwd`:/src fnichol/rust:1.4.0-musl \
+    file ./cli/target/x86_64-unknown-linux-musl/release/names
 ./cli/target/x86_64-unknown-linux-musl/release/names: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=6ad327ca3a5b21c42fa158832d89f6e9b0fc8e73, not stripped
 ```
 
