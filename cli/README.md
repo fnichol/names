@@ -149,7 +149,7 @@ Before you start to code, we recommend discussing your plans through a [GitHub i
 
 ## Authors
 
-Created and maintained by [Fletcher Nichol][fnichol] (<fnichol@nichol.ca>)
+Created and maintained by [Fletcher Nichol](https://github.com/fnichol) (<fnichol@nichol.ca>)
 
 ## License
 
