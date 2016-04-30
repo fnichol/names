@@ -1,6 +1,6 @@
 [package]
 name = "names"
-version = "0.10.0"
+version = "0.11.0"
 authors = ["Fletcher Nichol <fnichol@nichol.ca>"]
 license = "MIT"
 readme = "README.md"

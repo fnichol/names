@@ -1,3 +1,16 @@
+## 0.11.0 / 2016-04-29
+
+### Breaking API changes
+
+* Move adjectives const to `names::ADJECTIVES`. ([@fnichol][])
+* Move nouns const to `names::NOUNS`. ([@fnichol][])
+
+### Improvements
+
+* (cli) Add color and suggestions features. ([@fnichol][])
+* Inline adjective and noun data from plaintext files. ([@fnichol][])
+
+
 ## 0.10.0 / 2015-11-01
 
 ### Breaking API changes

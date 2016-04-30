@@ -1,9 +1,9 @@
 [root]
 name = "names-cli"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "clap 2.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "names 0.10.0",
+ "names 0.11.0",
 ]
 
 [[package]]
@@ -36,7 +36,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 
 [[package]]
 name = "names"
-version = "0.10.0"
+version = "0.11.0"
 dependencies = [
  "rand 0.3.14 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
