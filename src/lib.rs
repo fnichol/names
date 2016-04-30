@@ -74,11 +74,13 @@ pub enum Name {
     Plain,
     /// This represents a naming strategy with a random number appended to the
     /// end, of the form `"ADJECTIVE-NOUN-NUMBER"`
-    Numbered
+    Numbered,
 }
 
 impl Default for Name {
-    fn default() -> Name { Name::Plain }
+    fn default() -> Name {
+        Name::Plain
+    }
 }
 
 /// A random name generator which combines an adjective, a noun, and an
@@ -108,11 +110,7 @@ impl<'a> Generator<'a> {
     ///
     /// assert_eq!("sassy-clocks", generator.next().unwrap());
     /// ```
-    pub fn new(
-        adjectives: &'a [&'a str],
-        nouns: &'a [&'a str],
-        naming: Name
-    ) -> Generator<'a> {
+    pub fn new(adjectives: &'a [&'a str], nouns: &'a [&'a str], naming: Name) -> Generator<'a> {
         Generator {
             adjectives: adjectives,
             nouns: nouns,
@@ -131,10 +129,7 @@ impl<'a> Generator<'a> {
     /// println!("My new name is: {}", generator.next().unwrap());
     /// ```
     pub fn with_naming(naming: Name) -> Generator<'a> {
-        Generator::new(
-            adjectives::LIST,
-            nouns::LIST,
-            naming)
+        Generator::new(adjectives::LIST, nouns::LIST, naming)
     }
 
     fn rand_adj(&self) -> &str {
