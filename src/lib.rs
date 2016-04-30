@@ -29,7 +29,7 @@
 //! ```
 //! use names::Generator;
 //!
-//! let mut generator: Generator = Default::default();
+//! let mut generator = Generator::default();
 //! println!("Your project is: {}", generator.next().unwrap());
 //! // #=> "Your project is: rusty-nail"
 //! ```
@@ -52,11 +52,11 @@
 //! this returns only one result:
 //!
 //! ```
-//! use names::Generator;
+//! use names::{Generator, Name};
 //!
 //! let adjectives = &["imaginary"];
 //! let nouns = &["roll"];
-//! let mut generator = Generator::new(adjectives, nouns, Default::default());
+//! let mut generator = Generator::new(adjectives, nouns, Name::default());
 //!
 //! assert_eq!("imaginary-roll", generator.next().unwrap());
 //! ```
@@ -65,8 +65,10 @@ extern crate rand;
 
 use rand::Rng;
 
-mod adjectives;
-mod nouns;
+pub const ADJECTIVES: &'static [&'static str] = &include!(concat!(env!("OUT_DIR"),
+                                                                  "/adjectives.rs"));
+
+pub const NOUNS: &'static [&'static str] = &include!(concat!(env!("OUT_DIR"), "/nouns.rs"));
 
 /// A naming strategy for the `Generator`
 pub enum Name {
@@ -74,11 +76,13 @@ pub enum Name {
     Plain,
     /// This represents a naming strategy with a random number appended to the
     /// end, of the form `"ADJECTIVE-NOUN-NUMBER"`
-    Numbered
+    Numbered,
 }
 
 impl Default for Name {
-    fn default() -> Name { Name::Plain }
+    fn default() -> Self {
+        Name::Plain
+    }
 }
 
 /// A random name generator which combines an adjective, a noun, and an
@@ -108,11 +112,7 @@ impl<'a> Generator<'a> {
     ///
     /// assert_eq!("sassy-clocks", generator.next().unwrap());
     /// ```
-    pub fn new(
-        adjectives: &'a [&'a str],
-        nouns: &'a [&'a str],
-        naming: Name
-    ) -> Generator<'a> {
+    pub fn new(adjectives: &'a [&'a str], nouns: &'a [&'a str], naming: Name) -> Self {
         Generator {
             adjectives: adjectives,
             nouns: nouns,
@@ -130,11 +130,8 @@ impl<'a> Generator<'a> {
     ///
     /// println!("My new name is: {}", generator.next().unwrap());
     /// ```
-    pub fn with_naming(naming: Name) -> Generator<'a> {
-        Generator::new(
-            adjectives::LIST,
-            nouns::LIST,
-            naming)
+    pub fn with_naming(naming: Name) -> Self {
+        Generator::new(ADJECTIVES, NOUNS, naming)
     }
 
     fn rand_adj(&self) -> &str {
@@ -151,8 +148,8 @@ impl<'a> Generator<'a> {
 }
 
 impl<'a> Default for Generator<'a> {
-    fn default() -> Generator<'a> {
-        Generator::new(adjectives::LIST, nouns::LIST, Default::default())
+    fn default() -> Self {
+        Generator::new(ADJECTIVES, NOUNS, Name::default())
     }
 }
 

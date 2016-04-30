@@ -12,6 +12,9 @@ A program to generate random names that look like 'used-jellyfish'.
 [[bin]]
 name = "names"
 
-[dependencies]
-clap = "~1.4"
-names = { path = ".." }
+[dependencies.clap]
+version = "~2.3"
+features = [ "suggestions", "color", "unstable" ]
+
+[dependencies.names]
+path = ".."
