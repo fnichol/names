@@ -13,6 +13,7 @@ A library to generate random name strings suitable for use in container
 instances, project names, application instances, etc.
 """
 exclude = ["cli"]
+build = "build.rs"
 
 [lib]
 name = "names"
