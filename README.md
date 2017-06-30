@@ -34,7 +34,7 @@ a name:
 use names::{Generator, Name};
 
 fn main() {
-    let mut generator = Generator::default(Name::Plain);
+    let mut generator = Generator::with_naming(Name::Plain);
 
     println!("Your project is: {}", generator.next().unwrap());
     // #=> "Your project is: rusty-nail"
@@ -48,7 +48,7 @@ If more randomness is required, you can generate a name with a trailing
 use names::{Generator, Name};
 
 fn main() {
-    let mut generator = Generator::default(Name::Numbered);
+    let mut generator = Generator::with_naming(Name::Numbered);
     println!("Your project is: {}", generator.next().unwrap());
     // #=> "Your project is: pushy-pencil-5602"
 }
