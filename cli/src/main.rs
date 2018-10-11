@@ -6,8 +6,7 @@ use names::{Generator, Name};
 
 fn main() {
     let (naming, amount) = {
-        let app =
-            clap_app!(names =>
+        let app = clap_app!(names =>
                 (version: &crate_version!()[..])
                 (author: "\nAuthor: Fletcher Nichol <fnichol@nichol.ca>\n")
                 (about: "A random name generator with results like `delirious-pail'.")
