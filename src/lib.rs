@@ -65,10 +65,9 @@ extern crate rand;
 
 use rand::Rng;
 
-pub const ADJECTIVES: &'static [&'static str] =
-    &include!(concat!(env!("OUT_DIR"), "/adjectives.rs"));
+pub const ADJECTIVES: &[&str] = &include!(concat!(env!("OUT_DIR"), "/adjectives.rs"));
 
-pub const NOUNS: &'static [&'static str] = &include!(concat!(env!("OUT_DIR"), "/nouns.rs"));
+pub const NOUNS: &[&str] = &include!(concat!(env!("OUT_DIR"), "/nouns.rs"));
 
 /// A naming strategy for the `Generator`
 pub enum Name {
