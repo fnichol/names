@@ -10,9 +10,9 @@ fi
 VERSION="${1:-${VERSION}}"
 
 echo "--> Building Linux release artifact version $VERSION"
-pushd `dirname $0`/../../
-  docker run --rm -v `pwd`:/src -e VERSION=$VERSION fnichol/rust:1.8.0-musl \
-    bash -c 'set -eux
+pushd $(dirname $0)/../../
+docker run --rm -v $(pwd):/src -e VERSION=$VERSION fnichol/rust:1.8.0-musl \
+  bash -c 'set -eux
       apt-get update
       apt-get install -y zip
       PLATFORM="`uname | tr [[:upper:]] [[:lower:]]`_`uname -m`"

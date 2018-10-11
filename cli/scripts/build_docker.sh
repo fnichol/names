@@ -17,27 +17,27 @@ on_exit() {
 trap on_exit 1 2 3 15 ERR
 
 VERSION="${1:-${VERSION}}"
-docker_context="`mktemp -d -t build_docker-XXXX`"
+docker_context="$(mktemp -d -t build_docker-XXXX)"
 repo="fnichol/names"
 github_repo="https://github.com/$repo/releases/download"
 
 echo "--> Building Docker release artifact version $VERSION"
 pushd "$docker_context"
-  curl -fsSLO \
-    "$github_repo/v${VERSION}/names_${VERSION}_linux_x86_64.zip"
-  curl -fsSLO \
-    "$github_repo/v${VERSION}/names_${VERSION}_linux_x86_64.zip.sha256"
-  shasum -a 256 -c names_*.zip.sha256
-  unzip names_*.zip
-  rm -f names_*.zip
+curl -fsSLO \
+  "$github_repo/v${VERSION}/names_${VERSION}_linux_x86_64.zip"
+curl -fsSLO \
+  "$github_repo/v${VERSION}/names_${VERSION}_linux_x86_64.zip.sha256"
+shasum -a 256 -c names_*.zip.sha256
+unzip names_*.zip
+rm -f names_*.zip
 
-  cat <<_DOCKERFILE_ >Dockerfile
+cat <<_DOCKERFILE_ >Dockerfile
 FROM scratch
 ADD names /names
 ENTRYPOINT ["/names"]
 _DOCKERFILE_
 
-  docker build -t "$repo:$VERSION" .
-  if [ -n "${LATEST:-}" ]; then docker build -t "$repo:latest" .; fi
+docker build -t "$repo:$VERSION" .
+if [ -n "${LATEST:-}" ]; then docker build -t "$repo:latest" .; fi
 popd
 echo "--> Finished build Docker release artifact version $VERSION."
