@@ -113,9 +113,9 @@ impl<'a> Generator<'a> {
     /// ```
     pub fn new(adjectives: &'a [&'a str], nouns: &'a [&'a str], naming: Name) -> Self {
         Generator {
-            adjectives: adjectives,
-            nouns: nouns,
-            naming: naming,
+            adjectives,
+            nouns,
+            naming,
         }
     }
 
