@@ -92,49 +92,6 @@ If you want (or need) to build the CLI from source, the following should not tak
 > ./target/release/names
 ```
 
-#### A static binary on Linux?
-
-This project was used by its author to experiment with producing static binaries on Linux from a Rust project that has no external dependencies. This was done using a special build of Rust that supports the [musl](http://www.musl-libc.org/) libc project, available via the [fnichol/rust:1.8.0-musl](https://hub.docker.com/r/fnichol/rust/) Docker image. Here's an example building the CLI to a static ELF binary on Linux:
-
-```sh
-> git clone https://github.com/fnichol/names.git
-> cd names
-> docker run --rm -ti -v `pwd`:/src -w /src/cli fnichol/rust:1.8.0-musl \
-    cargo build --release --target=x86_64-unknown-linux-musl
-
-> docker run --rm -ti -v `pwd`:/src fnichol/rust:1.8.0-musl \
-    du -h ./cli/target/x86_64-unknown-linux-musl/release/names
-1.5M    ./cli/target/x86_64-unknown-linux-musl/release/names
-
-> docker run --rm -ti -v `pwd`:/src fnichol/rust:1.8.0-musl \
-    ldd ./cli/target/x86_64-unknown-linux-musl/release/names
-        not a dynamic executable
-
-> docker run --rm -ti -v `pwd`:/src fnichol/rust:1.8.0-musl \
-    file ./cli/target/x86_64-unknown-linux-musl/release/names
-./cli/target/x86_64-unknown-linux-musl/release/names: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=6ad327ca3a5b21c42fa158832d89f6e9b0fc8e73, not stripped
-```
-
-A variant of this approach is used in the [build_linux.sh](https://github.com/fnichol/names/blob/master/cli/scripts/build_linux.sh) script, which additional strips the binary and produces a Zip archive and SHA 256 checksum:
-
-
-```sh
-> git clone https://github.com/fnichol/names.git
-> cd names
-> ./cli/scripts/build_linux.sh 0.11.0
-
-> du -h ./cli/target/x86_64-unknown-linux-musl/release/names
-996K    ./cli/target/x86_64-unknown-linux-musl/release/names
-
-> file ./cli/target/x86_64-unknown-linux-musl/release/names
-./cli/target/x86_64-unknown-linux-musl/release/names: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, stripped
-
-> du -csh ./cli/target/names*.zip*
-396K    cli/target/names_0.11.0_linux_x86_64.zip
-4.0K    cli/target/names_0.11.0_linux_x86_64.zip.sha256
-400K    total
-```
-
 ## User feedback
 
 ### Issues
