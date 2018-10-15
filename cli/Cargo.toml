@@ -6,7 +6,7 @@ license = "MIT"
 repository = "https://github.com/fnichol/names.git"
 homepage = "https://github.com/fnichol/names.git"
 description = """
-A program to generate random names that look like 'used-jellyfish'.
+A random name generator with results like 'used-jellyfish'.
 """
 
 [[bin]]
@@ -14,7 +14,7 @@ name = "names"
 path = "src/main.rs"
 
 [dependencies.clap]
-version = "~2.27"
+version = "~2.32.0"
 features = [ "suggestions", "color", "unstable" ]
 
 [dependencies.names]
