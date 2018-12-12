@@ -26,7 +26,8 @@ fn parse_cli_args() -> (Name, usize) {
                 .short("n")
                 .long(FLAG_NUMBER)
                 .help("Adds a random number to the name(s)"),
-        ).arg(
+        )
+        .arg(
             Arg::with_name(ARG_AMOUNT)
                 .help("Number of names to generate")
                 .default_value("1"),
