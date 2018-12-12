@@ -4,6 +4,7 @@ version = "0.11.0"
 authors = ["Fletcher Nichol <fnichol@nichol.ca>"]
 license = "MIT"
 readme = "README.md"
+edition = "2018"
 documentation = "http://fnichol.github.io/names/names/"
 repository = "https://github.com/fnichol/names.git"
 homepage = "https://github.com/fnichol/names.git"

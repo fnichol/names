@@ -1,9 +1,7 @@
-#[macro_use]
-extern crate clap;
-extern crate names;
-
-use clap::{AppSettings, Arg};
-
+use clap::{
+    app_from_crate, crate_authors, crate_description, crate_name, crate_version, value_t_or_exit,
+    AppSettings, Arg,
+};
 use names::{Generator, Name};
 
 fn main() {

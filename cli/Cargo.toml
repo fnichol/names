@@ -3,6 +3,7 @@ name = "names-cli"
 version = "0.11.0"
 authors = ["Fletcher Nichol <fnichol@nichol.ca>"]
 license = "MIT"
+edition = "2018"
 repository = "https://github.com/fnichol/names.git"
 homepage = "https://github.com/fnichol/names.git"
 description = """

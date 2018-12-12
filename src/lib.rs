@@ -15,12 +15,6 @@
 //! names = "0.9.0"
 //! ```
 //!
-//! and this to your crate root:
-//!
-//! ```
-//! extern crate names;
-//! ```
-//!
 //! # Example: painless defaults
 //!
 //! The easiest way to get started is to use the default `Generator` to return
@@ -60,8 +54,6 @@
 //!
 //! assert_eq!("imaginary-roll", generator.next().unwrap());
 //! ```
-
-extern crate rand;
 
 use rand::Rng;
 
