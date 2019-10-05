@@ -28,5 +28,5 @@ fn generate(src_path: &Path, dst_path: &Path) {
     for word in src.lines() {
         write!(dst, "\"{}\",\n", &word.unwrap()).unwrap();
     }
-    write!(dst, "];\n").unwrap();
+    write!(dst, "]\n").unwrap();
 }
