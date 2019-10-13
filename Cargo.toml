@@ -21,4 +21,4 @@ name = "names"
 path = "src/lib.rs"
 
 [dependencies]
-rand = "^0.5"
+rand = "^0.7"
