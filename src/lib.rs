@@ -55,7 +55,7 @@
 //! assert_eq!("imaginary-roll", generator.next().unwrap());
 //! ```
 
-use rand::Rng;
+use rand::{rngs::ThreadRng, seq::SliceRandom, Rng};
 
 pub const ADJECTIVES: &[&str] = &include!(concat!(env!("OUT_DIR"), "/adjectives.rs"));
 
@@ -85,6 +85,7 @@ pub struct Generator<'a> {
     adjectives: &'a [&'a str],
     nouns: &'a [&'a str],
     naming: Name,
+    rng: ThreadRng,
 }
 
 impl<'a> Generator<'a> {
@@ -108,6 +109,7 @@ impl<'a> Generator<'a> {
             adjectives,
             nouns,
             naming,
+            rng: ThreadRng::default(),
         }
     }
 
@@ -124,18 +126,6 @@ impl<'a> Generator<'a> {
     pub fn with_naming(naming: Name) -> Self {
         Generator::new(ADJECTIVES, NOUNS, naming)
     }
-
-    fn rand_adj(&self) -> &str {
-        rand::thread_rng().choose(self.adjectives).unwrap()
-    }
-
-    fn rand_noun(&self) -> &str {
-        rand::thread_rng().choose(self.nouns).unwrap()
-    }
-
-    fn rand_num(&self) -> u16 {
-        rand::thread_rng().gen_range(1, 10000)
-    }
 }
 
 impl<'a> Default for Generator<'a> {
@@ -148,12 +138,17 @@ impl<'a> Iterator for Generator<'a> {
     type Item = String;
 
     fn next(&mut self) -> Option<String> {
-        let adj = self.rand_adj();
-        let noun = self.rand_noun();
+        let mut rng = self.rng;
+        let adj = self.adjectives.choose(&mut rng).unwrap();
+        let noun = self.nouns.choose(&mut rng).unwrap();
 
         Some(match self.naming {
             Name::Plain => format!("{}-{}", adj, noun),
-            Name::Numbered => format!("{}-{}-{:04}", adj, noun, self.rand_num()),
+            Name::Numbered => format!("{}-{}-{:04}", adj, noun, rand_num(&mut rng)),
         })
     }
+}
+
+fn rand_num(rng: &mut ThreadRng) -> u16 {
+    rng.gen_range(1, 10000)
 }
