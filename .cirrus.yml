@@ -1,0 +1,290 @@
+---
+anchors:
+  - &install_cargo_make_unix
+    install_cargo_make_script: ./.ci/install-cargo-make.sh
+
+  - &install_cargo_make_windows
+    install_cargo_make_script: .\.ci\install-cargo-make.ps1
+
+  - &build_cargo_make_unix
+    build_cargo_make_cache:
+      folder: $CARGO_HOME/opt/cargo-make
+      fingerprint_script: |
+        echo "$CIRRUS_OS"
+        echo "${CI_CACHE_BUST:-}"
+        echo "$RUST_VERSION"
+        ./.ci/install-cargo-make.sh --print-latest
+      populate_script: ./.ci/build-cargo-make.sh
+    link_cargo_make_script: ln -snf "$CARGO_HOME"/opt/*/bin/* "$CARGO_HOME"/bin/
+
+  - &build_cargo_make_windows
+    build_cargo_make_cache:
+      folder: $CARGO_HOME\opt\cargo-make
+      fingerprint_script: |
+        $env:CIRRUS_OS
+        $env:CI_CACHE_BUST
+        $env:RUST_VERSION
+        .\.ci\install-cargo-make.ps1 -PrintLatest
+      populate_script: .\.ci\build-cargo-make.ps1
+    link_cargo_make_script: |
+      Get-ChildItem "$env:CARGO_HOME\opt\*\bin\*.exe" | ForEach-Object {
+        $dst = "$env:CARGO_HOME\bin\$($_.Name)"
+
+        if (-Not (Test-Path "$dst")) {
+          New-Item -Path "$dst" -Type SymbolicLink -Value "$_" | Out-Null
+        }
+      }
+
+  - &base_unix
+    env:
+      CARGO_HOME: /usr/local/cargo
+      PATH: /usr/local/cargo/bin:$PATH
+    install_rustup_script: |
+      curl -sSfL https://sh.rustup.rs | sh -s -- \
+        -y --default-toolchain none --profile minimal --no-modify-path
+    install_rust_script: rustup default "$RUST_VERSION"
+
+    cargo_cache:
+      folder: $CARGO_HOME/registry
+      fingerprint_script: |
+        if [ ! -f Cargo.lock ]; then
+          cargo generate-lockfile --quiet
+        fi
+        echo "${CIRRUS_OS}"; cat Cargo.lock
+
+  - &base_linux
+    install_dependencies_script: apt-get install -y unzip
+    <<: *base_unix
+    <<: *install_cargo_make_unix
+
+  - &base_macos
+    <<: *base_unix
+    env:
+      CARGO_HOME: $HOME/.cargo
+      PATH: $HOME/.cargo/bin:$PATH
+    <<: *install_cargo_make_unix
+
+  - &base_freebsd
+    <<: *base_unix
+    <<: *build_cargo_make_unix
+
+  - &base_windows
+    env:
+      CIRRUS_SHELL: powershell
+      CARGO_HOME: $USERPROFILE\.cargo
+      PATH: $USERPROFILE\.cargo\bin;$PATH
+
+    install_rustup_script: |
+      & ([scriptblock]::Create((New-Object System.Net.WebClient).
+        DownloadString('https://gist.github.com/fnichol/699d3c2930649a9932f71bab8a315b31/raw/rustup-init.ps1')
+        )) -y --default-toolchain none --profile minimal
+    install_rust_script: rustup default "$env:RUST_VERSION"
+
+    cargo_cache:
+      folder: $CARGO_HOME\registry
+      fingerprint_script: |
+        if (-Not (Test-Path "Cargo.lock")) {
+          cargo "+$env:RUST_VERSION" generate-lockfile --quiet
+        }
+        $env:CIRRUS_OS; Get-Content Cargo.lock
+    <<: *install_cargo_make_windows
+
+  - &install_target_unix
+    install_rustup_target_script: rustup target install "$TARGET"
+
+  - &install_target_windows
+    install_rustup_target_script: rustup target install "$env:TARGET"
+
+  - &build_unix
+    build_script: cargo make build-release -- "--bin=$BIN" "--target=$TARGET"
+    strip_script: $STRIP "target/$TARGET/release/$BIN"
+    rename_script: cp "target/$TARGET/release/$BIN" "${BIN}-${TARGET}"
+
+  - &build_windows
+    build_script: |
+      cargo make build-release -- "--bin=$env:BIN" "--target=$env:TARGET"
+    rename_script: |
+      Copy-Item "target\$env:TARGET\release\$env:BIN.exe" "$env:BIN-$env:TARGET.exe"
+
+  - &cleanup_before_upload_cache_unix
+    cleanup_before_upload_cache_script: rm -rf "$CARGO_HOME/registry/index"
+
+  - &cleanup_before_upload_cache_windows
+    cleanup_before_upload_cache_script: |
+      if (Test-Path "$env:USERPROFILE\.cargo\registry\index") {
+        Remove-Item -Recurse -Force "$env:USERPROFILE\.cargo\registry\index"
+      }
+
+env:
+  RUST_VERSION: stable
+  MIN_SUPPORTED_RUST_VERSION: 1.40.0 # Due to clap 3 beta.2 (mem::take)
+
+task:
+  name: check
+  container:
+    image: rust:latest
+  <<: *base_linux
+  lint_script: cargo make check-lint
+  format_script: cargo make check-format
+
+task:
+  name: test-${RUST_VERSION}-${TARGET}
+  env:
+    matrix:
+      - RUST_VERSION: stable
+      - RUST_VERSION: nightly
+      - RUST_VERSION: $MIN_SUPPORTED_RUST_VERSION
+  allow_failures: $RUST_VERSION == 'nightly'
+  matrix:
+    - matrix:
+        - env:
+            TARGET: x86_64-unknown-linux-gnu
+          container:
+            image: rust:latest
+          <<: *base_linux
+        - env:
+            TARGET: x86_64-apple-darwin
+          osx_instance:
+            image: catalina-base
+          <<: *base_macos
+        - env:
+            TARGET: x86_64-unknown-freebsd
+          freebsd_instance:
+            image_family: freebsd-11-4
+          <<: *base_freebsd
+      <<: *install_target_unix
+      test_bin_script: cargo make test-bin -- "--target=$TARGET"
+      test_lib_script: cargo make test-lib -- "--target=$TARGET"
+      <<: *cleanup_before_upload_cache_unix
+    - env:
+        TARGET: x86_64-pc-windows-msvc
+      windows_container:
+        image: fnichol/windowsservercore:ltsc2019-vs2019-vctools
+      <<: *base_windows
+      <<: *install_target_windows
+      test_bin_script: cargo make test-bin -- "--target=$env:TARGET"
+      test_lib_script: cargo make test-lib -- "--target=$env:TARGET"
+      <<: *cleanup_before_upload_cache_windows
+
+task:
+  name: bin-build-${BIN}-${TARGET}
+  env:
+    BIN: names
+    RUST_BACKTRACE: 1
+    GITHUB_TOKEN: ENCRYPTED[55bcbfb4ebfdf487e0e0c404ea1fa3b21b3fb509f27062363d91110e2611795abd521815979ac2fa2c23300cbc3afa95]
+  matrix:
+    - matrix:
+        - env:
+            matrix:
+              - TARGET: arm-unknown-linux-gnueabihf
+                STRIP: arm-linux-gnueabihf-strip
+              - TARGET: aarch64-unknown-linux-gnu
+                STRIP: aarch64-linux-gnu-strip
+              - TARGET: i686-unknown-linux-gnu
+                STRIP: x86_64-linux-gnu-strip
+              - TARGET: i686-unknown-linux-musl
+                STRIP: i686-linux-musl-strip
+              - TARGET: x86_64-unknown-linux-gnu
+                STRIP: x86_64-linux-gnu-strip
+              - TARGET: x86_64-unknown-linux-musl
+                STRIP: x86_64-linux-musl-strip
+            EXT: tar.gz
+            TYPE: application/gzip
+          container:
+            image: rustembedded/cross:$TARGET
+          depends_on:
+            - check
+            - test-stable-x86_64-unknown-linux-gnu
+          <<: *base_linux
+          <<: *install_target_unix
+          <<: *build_unix
+          archive_script: tar czf "${BIN}-${TARGET}.${EXT}" "${BIN}-${TARGET}"
+        - env:
+            TARGET: x86_64-apple-darwin
+            STRIP: strip
+            EXT: zip
+            TYPE: application/zip
+          osx_instance:
+            image: catalina-base
+          depends_on:
+            - check
+            - test-stable-x86_64-apple-darwin
+          <<: *base_macos
+          <<: *install_target_unix
+          <<: *build_unix
+          archive_script: zip "${BIN}-${TARGET}" "${BIN}-${TARGET}"
+        - env:
+            TARGET: x86_64-unknown-freebsd
+            STRIP: strip
+            EXT: tar.gz
+            TYPE: application/gzip
+          freebsd_instance:
+            image_family: freebsd-11-4
+          depends_on:
+            - check
+            - test-stable-x86_64-unknown-freebsd
+          <<: *base_freebsd
+          <<: *install_target_unix
+          <<: *build_unix
+          archive_script: |
+            tar czf "${BIN}-${TARGET}.${EXT}" "${BIN}-${TARGET}"
+      sha256_script: |
+        ./.ci/sha256.sh "${BIN}-${TARGET}.${EXT}" \
+          > "${BIN}-${TARGET}.${EXT}.sha256"
+      binary_artifacts:
+        path: ${BIN}-${TARGET}.${EXT}
+        type: $TYPE
+      release_artifact_script: |
+        if [ -n "${CIRRUS_RELEASE:-}" ]; then
+          ./.ci/publish-artifact.sh "$CIRRUS_REPO_FULL_NAME" \
+            "$CIRRUS_RELEASE" "${BIN}-${TARGET}.${EXT}"
+          ./.ci/publish-artifact.sh "$CIRRUS_REPO_FULL_NAME" \
+            "$CIRRUS_RELEASE" "${BIN}-${TARGET}.${EXT}.sha256"
+        fi
+      <<: *cleanup_before_upload_cache_unix
+    - env:
+        TARGET: x86_64-pc-windows-msvc
+        EXT: zip
+        TYPE: application/zip
+      windows_container:
+        image: fnichol/windowsservercore:ltsc2019-vs2019-vctools
+      depends_on:
+        - check
+        - test-stable-x86_64-pc-windows-msvc
+      <<: *base_windows
+      <<: *install_target_windows
+      <<: *build_windows
+      archive_script: |
+        Compress-Archive "$env:BIN-$env:TARGET.exe" "$env:BIN-$env:TARGET.$env:EXT"
+      sha256_script: |
+        .\.ci\sha256.ps1 "$env:BIN-$env:TARGET.$env:EXT" `
+          > "$env:BIN-$env:TARGET.$env:EXT.sha256"
+      binary_artifacts:
+        path: ${BIN}-${TARGET}.${EXT}
+        type: $TYPE
+      release_artifact_script: |
+        if (Test-Path env:CIRRUS_RELEASE) {
+          .\.ci\publish-artifact.ps1 "$env:CIRRUS_REPO_FULL_NAME" `
+            `"$env:CIRRUS_RELEASE" "$env:BIN-$env:TARGET.$env:EXT"
+          .\.ci\publish-artifact.ps1 "$env:CIRRUS_REPO_FULL_NAME" `
+            `"$env:CIRRUS_RELEASE" "$env:BIN-$env:TARGET.$env:EXT.sha256"
+        }
+      <<: *cleanup_before_upload_cache_windows
+
+docker_builder:
+  only_if: $CIRRUS_RELEASE != ''
+  depends_on:
+    - bin-build-names-x86_64-unknown-linux-musl
+  env:
+    IMAGE_NAME: fnichol/names
+    BIN: names
+    DOCKER_USERNAME: ENCRYPTED[8a1752e5e975bfdb57a81e88dac08c6a31f909acd6a82e213b4d362a57f8b090767641662bab840d76ef26de38588451]
+    DOCKER_PASSWORD: ENCRYPTED[12bfff137d45a5dfb76671cbd072338ef04c54cf0f6b7076eccb8eaee28812e412c1eaacb612312a535b7b255ab18a93]
+  build_script: |
+    ./.ci/build-docker-image.sh "$IMAGE_NAME" "$BIN" "${CIRRUS_TAG#v}"
+  login_script: >
+    echo "$DOCKER_PASSWORD" \
+      | docker login --username "$DOCKER_USERNAME" --password-stdin
+  push_script:
+    - docker push "$IMAGE_NAME:${CIRRUS_TAG#v}"
+    - docker push "$IMAGE_NAME:latest"

@@ -4,7 +4,7 @@
 //! The name `Generator` implements the `Iterator` trait so it can be used with
 //! adapters, consumers, and in loops.
 //!
-//! # Usage
+//! # Library Usage
 //!
 //! This crate is [on crates.io](https://crates.io/crates/names) and can be
 //! used by adding `names` to your dependencies in your project's `Cargo.toml`
@@ -12,10 +12,11 @@
 //!
 //! ```toml
 //! [dependencies]
-//! names = "0.9.0"
+//! names = { version = "0.11.0", default-features = false }
 //! ```
+//! # Library Examples
 //!
-//! # Example: painless defaults
+//! ## Example: painless defaults
 //!
 //! The easiest way to get started is to use the default `Generator` to return
 //! a name:
@@ -39,7 +40,7 @@
 //! // #=> "Your project is: pushy-pencil-5602"
 //! ```
 //!
-//! # Example: with custom dictionaries
+//! ## Example: with custom dictionaries
 //!
 //! If you would rather supply your own custom adjective and noun word lists,
 //! you can provide your own by supplying 2 string slices. For example,
@@ -55,10 +56,15 @@
 //! assert_eq!("imaginary-roll", generator.next().unwrap());
 //! ```
 
+#![doc(html_root_url = "https://docs.rs/names/0.11.0")]
+#![deny(missing_docs)]
+
 use rand::{rngs::ThreadRng, seq::SliceRandom, Rng};
 
+/// List of English adjective words
 pub const ADJECTIVES: &[&str] = &include!(concat!(env!("OUT_DIR"), "/adjectives.rs"));
 
+/// List of English noun words
 pub const NOUNS: &[&str] = &include!(concat!(env!("OUT_DIR"), "/nouns.rs"));
 
 /// A naming strategy for the `Generator`

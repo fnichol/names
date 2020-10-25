@@ -1,4 +1,4 @@
-# names
+# {{crate}}
 
 |                  |                                                         |
 | ---------------: | ------------------------------------------------------- |
@@ -13,30 +13,6 @@
 **Table of Contents**
 
 <!-- toc -->
-
-- [CLI](#cli)
-- [CLI Usage](#cli-usage)
-- [CLI Installation](#cli-installation)
-  - [GitHub releases](#github-releases)
-  - [Docker images](#docker-images)
-  - [Building from source](#building-from-source)
-- [Library](#library)
-- [Library Usage](#library-usage)
-- [Library Examples](#library-examples)
-  - [Example: painless defaults](#example-painless-defaults)
-  - [Example: with custom dictionaries](#example-with-custom-dictionaries)
-- [CI Status](#ci-status)
-  - [Build (master branch)](#build-master-branch)
-  - [Test (master branch)](#test-master-branch)
-  - [Check (master branch)](#check-master-branch)
-- [Code of Conduct](#code-of-conduct)
-- [Issues](#issues)
-- [Contributing](#contributing)
-- [Release History](#release-history)
-- [Authors](#authors)
-- [License](#license)
-
-<!-- tocstop -->
 
 ## CLI
 
@@ -138,63 +114,7 @@ with the Rust distributions) before running:
 
 ## Library
 
-This crate provides a generate that constructs random name strings suitable for
-use in container instances, project names, application instances, etc.
-
-The name `Generator` implements the `Iterator` trait so it can be used with
-adapters, consumers, and in loops.
-
-## Library Usage
-
-This crate is [on crates.io](https://crates.io/crates/names) and can be used by
-adding `names` to your dependencies in your project's `Cargo.toml` file:
-
-```toml
-[dependencies]
-names = { version = "0.11.0", default-features = false }
-```
-
-## Library Examples
-
-### Example: painless defaults
-
-The easiest way to get started is to use the default `Generator` to return a
-name:
-
-```rust
-use names::Generator;
-
-let mut generator = Generator::default();
-println!("Your project is: {}", generator.next().unwrap());
-// #=> "Your project is: rusty-nail"
-```
-
-If more randomness is required, you can generate a name with a trailing 4-digit
-number:
-
-```rust
-use names::{Generator, Name};
-
-let mut generator = Generator::with_naming(Name::Numbered);
-println!("Your project is: {}", generator.next().unwrap());
-// #=> "Your project is: pushy-pencil-5602"
-```
-
-### Example: with custom dictionaries
-
-If you would rather supply your own custom adjective and noun word lists, you
-can provide your own by supplying 2 string slices. For example, this returns
-only one result:
-
-```rust
-use names::{Generator, Name};
-
-let adjectives = &["imaginary"];
-let nouns = &["roll"];
-let mut generator = Generator::new(adjectives, nouns, Name::default());
-
-assert_eq!("imaginary-roll", generator.next().unwrap());
-```
+{{readme}}
 
 ## CI Status
 

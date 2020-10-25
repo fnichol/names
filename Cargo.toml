@@ -2,23 +2,33 @@
 name = "names"
 version = "0.11.0"
 authors = ["Fletcher Nichol <fnichol@nichol.ca>"]
+edition = "2018"
 license = "MIT"
 readme = "README.md"
-edition = "2018"
-documentation = "http://fnichol.github.io/names/names/"
-repository = "https://github.com/fnichol/names.git"
-homepage = "https://github.com/fnichol/names.git"
+repository = "https://github.com/fnichol/names"
+documentation = "https://docs.rs/names"
+homepage = "https://github.com/fnichol/names"
 keywords = ["name", "random"]
+categories = ["command-line-utilities"]
 description = """
-A library to generate random name strings suitable for use in container
+A random name generator with names suitable for use in container
 instances, project names, application instances, etc.
 """
-exclude = ["cli"]
-build = "build.rs"
 
-[lib]
-name = "names"
-path = "src/lib.rs"
+[features]
+default = ["application"]
+
+# Required for building the `names` CLI. Should be disabled when depending on
+# names as a library. For example, to use as a library in a Cargo.toml:
+# `names = { version = "...", default-features = false }`
+application = ["clap"]
 
 [dependencies]
-rand = "^0.7"
+clap = { version = "3.0.0-beta.2", optional = true }
+rand = "0.7.3"
+
+[dev-dependencies]
+version-sync = "0.9.1"
+
+[package.metadata.docs.rs]
+no-default-features = true
