@@ -151,7 +151,7 @@ adding `names` to your dependencies in your project's `Cargo.toml` file:
 
 ```toml
 [dependencies]
-names = { version = "0.11.0", default-features = false }
+names = { version = "0.11.1-dev", default-features = false }
 ```
 
 ## Library Examples
