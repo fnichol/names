@@ -81,6 +81,13 @@ dependencies = [
   "test",
 ]
 
+[tasks.pre-release-hook]
+description = "Prepares for a release"
+dependencies = [
+  "readme",
+  "verify-version-numbers",
+]
+
 [tasks.readme]
 description = "Generates, updates, & formats the README"
 category = "Readme"
@@ -153,6 +160,10 @@ dependencies = ["install-mtoc"]
 command = "mtoc"
 args = ["--check", "--format", "dashes", "README.md"]
 
+[tasks.release]
+command = "cargo"
+args = ["release", "${@}"]
+
 [tasks.rustfmt]
 description = "Runs Rustfmt to format code"
 dependencies = ["install-rustfmt"]
@@ -186,11 +197,23 @@ category = "Test"
 command = "cargo"
 args = ["test", "--no-default-features", "--lib", "${@}"]
 
+[tasks.verify-version-numbers]
+private = true
+command = "cargo"
+args = ["test", "--test", "version-numbers"]
+
 [tasks.install-cargo-readme]
 private = true
 [tasks.install-cargo-readme.install_crate]
 crate_name = "cargo-readme"
 binary = "cargo-readme"
+test_arg = "--help"
+
+[tasks.install-cargo-release]
+private = true
+[tasks.install-cargo-release.install_crate]
+crate_name = "cargo-release"
+binary = "cargo-release"
 test_arg = "--help"
 
 [tasks.install-clippy]
