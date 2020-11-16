@@ -4,7 +4,7 @@
 //! The name `Generator` implements the `Iterator` trait so it can be used with
 //! adapters, consumers, and in loops.
 //!
-//! # Library Usage
+//! ## Usage
 //!
 //! This crate is [on crates.io](https://crates.io/crates/names) and can be
 //! used by adding `names` to your dependencies in your project's `Cargo.toml`
@@ -14,9 +14,9 @@
 //! [dependencies]
 //! names = { version = "0.11.1-dev", default-features = false }
 //! ```
-//! # Library Examples
+//! ## Examples
 //!
-//! ## Example: painless defaults
+//! ### Example: painless defaults
 //!
 //! The easiest way to get started is to use the default `Generator` to return
 //! a name:
@@ -40,7 +40,7 @@
 //! // #=> "Your project is: pushy-pencil-5602"
 //! ```
 //!
-//! ## Example: with custom dictionaries
+//! ### Example: with custom dictionaries
 //!
 //! If you would rather supply your own custom adjective and noun word lists,
 //! you can provide your own by supplying 2 string slices. For example,

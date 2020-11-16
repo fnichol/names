@@ -127,8 +127,9 @@ build_md5() {
         md5sum "$file"
         ;;
       Darwin)
-        need_cmd shasum
-        shasum -a 256 "$file"
+        need_cmd md5
+        need_cmd sed
+        md5 "$file" | sed -E 's/^.*\(([^)]+)\) = (.+)$/\2  \1/'
         ;;
       *)
         die "unsupported platform '$(uname -s)'"
