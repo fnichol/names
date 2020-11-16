@@ -6,7 +6,7 @@ print_usage() {
 
   echo "$program
 
-    Generates a SHA256 digest for a file
+    Generates a checksum digests for a file
 
     USAGE:
         $program [FLAGS] [--] <FILE>
@@ -69,7 +69,16 @@ main() {
     die "file '$file' not found"
   fi
 
-  build_sha256 "$file"
+  need_cmd basename
+  need_cmd dirname
+
+  local basename
+  basename="$(basename "$file")"
+
+  echo "--- Generating checksums for '$file'"
+  cd "$(dirname "$file")"
+  build_md5 "$basename"
+  build_sha256 "$basename"
 }
 
 build_sha256() {
@@ -77,16 +86,55 @@ build_sha256() {
 
   need_cmd uname
 
-  case "$(uname -s)" in
-    FreeBSD)
-      need_cmd sha256
-      sha256 "$file" | sed -E 's/^.*\(([^)]+)\) = (.+)$/\2  \1/'
-      ;;
-    *)
-      need_cmd shasum
-      shasum -a 256 "$file"
-      ;;
-  esac
+  echo "  - Generating SHA256 checksum digest"
+  {
+    case "$(uname -s)" in
+      FreeBSD)
+        need_cmd sed
+        need_cmd sha256
+        sha256 "$file" | sed -E 's/^.*\(([^)]+)\) = (.+)$/\2  \1/'
+        ;;
+      Linux)
+        need_cmd sha256sum
+        sha256sum "$file"
+        ;;
+      Darwin)
+        need_cmd shasum
+        shasum -a 256 "$file"
+        ;;
+      *)
+        die "unsupported platform '$(uname -s)'"
+        ;;
+    esac
+  } >"$file.sha256"
+}
+
+build_md5() {
+  local file="$1"
+
+  need_cmd uname
+
+  echo "  - Generating MD5 checksum digest"
+  {
+    case "$(uname -s)" in
+      FreeBSD)
+        need_cmd md5
+        need_cmd sed
+        md5 "$file" | sed -E 's/^.*\(([^)]+)\) = (.+)$/\2  \1/'
+        ;;
+      Linux)
+        need_cmd md5sum
+        md5sum "$file"
+        ;;
+      Darwin)
+        need_cmd shasum
+        shasum -a 256 "$file"
+        ;;
+      *)
+        die "unsupported platform '$(uname -s)'"
+        ;;
+    esac
+  } >"$file.md5"
 }
 
 die() {
