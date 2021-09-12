@@ -107,8 +107,8 @@ When the installer is run as `root` the installation directory defaults to
 curl -sSf https://fnichol.github.io/{{crate}}/install.sh | sudo sh
 ```
 
-A [nightly] release built from `HEAD` of the master branch is available which
-can also be installed:
+A [nightly] release built from `HEAD` of the main branch is available which can
+also be installed:
 
 ```sh
 curl -sSf https://fnichol.github.io/{{crate}}/install.sh \
@@ -131,7 +131,7 @@ with MD5 and SHA256 checksums to help verify the artifact on a target system.
 #### Docker Image
 
 A minimal image ships with each release (including a [nightly] built version
-from `HEAD` of the master branch) published to [Docker Hub][docker]. The
+from `HEAD` of the main branch) published to [Docker Hub][docker]. The
 entrypoint invokes the binary directly, so any arguments to `docker run` will be
 passed to the program. For example, to display the full help usage:
 
@@ -166,7 +166,7 @@ tremendous-line
 
 To install from source, you can clone the Git repository, build with Cargo and
 copy the binary into a destination directory. This will build the project from
-the latest commit on the master branch, which may not correspond to the latest
+the latest commit on the main branch, which may not correspond to the latest
 stable release:
 
 ```console
@@ -184,7 +184,7 @@ stable release:
 
 ## CI Status
 
-### Build (master branch)
+### Build (main branch)
 
 | Operating System | Target                        | Stable Rust                                                                     |
 | ---------------: | ----------------------------- | ------------------------------------------------------------------------------- |
@@ -198,7 +198,7 @@ stable release:
 |            macOS | `x86_64-apple-darwin`         | [![macOS Build Status][badge-ci-build-x86_64-apple-darwin]][ci-staging]         |
 |          Windows | `x86_64-pc-windows-msvc`      | [![Windows Build Status][badge-ci-build-x86_64-pc-windows-msvc]][ci-staging]    |
 
-### Test (master branch)
+### Test (main branch)
 
 | Operating System | Stable Rust                                                               | Nightly Rust                                                                |
 | ---------------: | ------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
@@ -211,7 +211,7 @@ stable release:
 [Minimum Supported Rust Version (MSRV)](https://github.com/rust-lang/rfcs/pull/2495)
 is also tested and can be viewed in the [CI dashboard][ci-staging].
 
-### Check (master branch)
+### Check (main branch)
 
 |        | Status                                                |
 | ------ | ----------------------------------------------------- |
@@ -280,7 +280,7 @@ licensed as above, without any additional terms or conditions.
 [badge-ci-check-lint]:
   https://img.shields.io/cirrus/github/fnichol/{{crate}}/staging?style=flat-square&task=check&script=lint
 [badge-ci-overall]:
-  https://img.shields.io/cirrus/github/fnichol/{{crate}}/master?style=flat-square
+  https://img.shields.io/cirrus/github/fnichol/{{crate}}/main?style=flat-square
 [badge-ci-test-nightly-freebsd]:
   https://img.shields.io/cirrus/github/fnichol/{{crate}}/staging?style=flat-square&task=test-nightly-x86_64-unknown-freebsd
 [badge-ci-test-nightly-linux]:
@@ -307,11 +307,11 @@ licensed as above, without any additional terms or conditions.
 [badge-license]: https://img.shields.io/crates/l/{{crate}}.svg?style=flat-square
 [badge-version]: https://img.shields.io/crates/v/{{crate}}.svg?style=flat-square
 [bors-dashboard]: https://app.bors.tech/repositories/37173
-[changelog]: https://github.com/fnichol/{{crate}}/blob/master/CHANGELOG.md
+[changelog]: https://github.com/fnichol/{{crate}}/blob/main/CHANGELOG.md
 [ci]: https://cirrus-ci.com/github/fnichol/{{crate}}
-[ci-staging]: https://cirrus-ci.com/github/fnichol/{{crate}}/master
+[ci-staging]: https://cirrus-ci.com/github/fnichol/{{crate}}/staging
 [code-of-conduct]:
-  https://github.com/fnichol/{{crate}}/blob/master/CODE_OF_CONDUCT.md
+  https://github.com/fnichol/{{crate}}/blob/main/CODE_OF_CONDUCT.md
 [commonmark]: https://commonmark.org/
 [crate]: https://crates.io/crates/{{crate}}
 [docker]: https://hub.docker.com/r/fnichol/{{crate}}
@@ -320,5 +320,5 @@ licensed as above, without any additional terms or conditions.
 [github]: https://github.com/fnichol/{{crate}}
 [github-releases]: https://github.com/fnichol/{{crate}}/releases
 [issues]: https://github.com/fnichol/{{crate}}/issues
-[license]: https://github.com/fnichol/{{crate}}/blob/master/LICENSE.txt
+[license]: https://github.com/fnichol/{{crate}}/blob/main/LICENSE.txt
 [nightly]: https://github.com/fnichol/{{crate}}/releases/tag/nightly
