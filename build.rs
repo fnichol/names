@@ -4,6 +4,8 @@ use std::io::{self, BufRead, BufReader, BufWriter, Write};
 use std::path::Path;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    update_version_if_nightly();
+
     let out_dir = env::var("OUT_DIR")?;
     let out_dir = Path::new(&out_dir);
     let src_dir = Path::new("data");
@@ -25,4 +27,19 @@ fn generate(src_path: impl AsRef<Path>, dst_path: impl AsRef<Path>) -> io::Resul
         writeln!(dst, "\"{}\",", &word.unwrap())?;
     }
     writeln!(dst, "]")
+}
+
+fn update_version_if_nightly() {
+    println!("cargo:rerun-if-env-changed=NIGHTLY_BUILD");
+    if let Ok(date) = std::env::var("NIGHTLY_BUILD") {
+        println!(
+            "cargo:rustc-env=CARGO_PKG_VERSION={}-nightly.{}",
+            std::env::var("CARGO_PKG_VERSION")
+                .unwrap()
+                .split('-')
+                .next()
+                .unwrap(),
+            date,
+        );
+    }
 }
