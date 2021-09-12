@@ -158,7 +158,7 @@ anchors:
 #
 env:
   RUST_VERSION: stable
-  MIN_SUPPORTED_RUST_VERSION: 1.40.0 # Due to clap 3 beta.2 (mem::take)
+  MIN_SUPPORTED_RUST_VERSION: 1.46.0 # Due to pulldown-cmark (const_fn)
 
 check_task:
   name: check
