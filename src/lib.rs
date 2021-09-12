@@ -144,17 +144,16 @@ impl<'a> Iterator for Generator<'a> {
     type Item = String;
 
     fn next(&mut self) -> Option<String> {
-        let mut rng = self.rng;
-        let adj = self.adjectives.choose(&mut rng).unwrap();
-        let noun = self.nouns.choose(&mut rng).unwrap();
+        let adj = self.adjectives.choose(&mut self.rng).unwrap();
+        let noun = self.nouns.choose(&mut self.rng).unwrap();
 
         Some(match self.naming {
             Name::Plain => format!("{}-{}", adj, noun),
-            Name::Numbered => format!("{}-{}-{:04}", adj, noun, rand_num(&mut rng)),
+            Name::Numbered => format!("{}-{}-{:04}", adj, noun, rand_num(&mut self.rng)),
         })
     }
 }
 
 fn rand_num(rng: &mut ThreadRng) -> u16 {
-    rng.gen_range(1, 10000)
+    rng.gen_range(1..10000)
 }
