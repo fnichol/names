@@ -148,20 +148,6 @@ Cargo is straight forward with:
 cargo install {{crate}}
 ```
 
-### Docker images
-
-If Docker is more your speed, there's a speedy teeny tiny image (~1MB) on the
-Docker hub at [fnichol/{{crate}}](https://hub.docker.com/r/fnichol/{{crate}}/).
-It's pretty easy to get started:
-
-```console
-> docker run fnichol/names 4
-furtive-polish
-modern-business
-alive-sun
-tremendous-line
-```
-
 #### From Source
 
 To install from source, you can clone the Git repository, build with Cargo and
