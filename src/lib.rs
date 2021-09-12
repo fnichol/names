@@ -56,7 +56,7 @@
 //! assert_eq!("imaginary-roll", generator.next().unwrap());
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/names/0.12.0")]
+#![doc(html_root_url = "https://docs.rs/names/0.12.1-dev")]
 #![deny(missing_docs)]
 
 use rand::{rngs::ThreadRng, seq::SliceRandom, Rng};
