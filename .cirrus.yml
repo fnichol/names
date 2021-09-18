@@ -44,13 +44,25 @@ anchors:
       curl -sSfL https://sh.rustup.rs | sh -s -- \
         -y --default-toolchain none --profile minimal --no-modify-path
     install_rust_script: rustup default "$RUST_VERSION"
-    cargo_cache:
+    registry_cache:
       folder: $CARGO_HOME/registry
       fingerprint_script: |
         if [ ! -f Cargo.lock ]; then
           cargo generate-lockfile --quiet
         fi
-        echo "${CIRRUS_OS}"; cat Cargo.lock
+        echo "${CI_CACHE_BUST:-}"
+        echo "${CIRRUS_OS}"
+        cat Cargo.lock
+    target_cache:
+      folder: target
+      fingerprint_script: |
+        if [ ! -f Cargo.lock ]; then
+          cargo generate-lockfile --quiet
+        fi
+        echo "${CI_CACHE_BUST:-}"
+        echo "$CIRRUS_TASK_NAME"
+        rustc --verbose --version
+        cat Cargo.lock
 
   - &base_linux
     install_dependencies_script: |
@@ -84,13 +96,25 @@ anchors:
         DownloadString('https://gist.github.com/fnichol/699d3c2930649a9932f71bab8a315b31/raw/rustup-init.ps1')
         )) -y --default-toolchain none --profile minimal
     install_rust_script: rustup default "$env:RUST_VERSION"
-    cargo_cache:
+    registry_cache:
       folder: $CARGO_HOME\registry
       fingerprint_script: |
         if (-Not (Test-Path "Cargo.lock")) {
           cargo "+$env:RUST_VERSION" generate-lockfile --quiet
         }
-        $env:CIRRUS_OS; Get-Content Cargo.lock
+        $env:CI_CACHE_BUST
+        $env:CIRRUS_OS
+        Get-Content Cargo.lock
+    target_cache:
+      folder: target
+      fingerprint_script: |
+        if (-Not (Test-Path "Cargo.lock")) {
+          cargo "+$env:RUST_VERSION" generate-lockfile --quiet
+        }
+        $env:CI_CACHE_BUST
+        $env:CIRRUS_TASK_NAME
+        rustc --verbose --version
+        Get-Content Cargo.lock
     <<: *install_cargo_make_windows
 
   - &install_target_unix
