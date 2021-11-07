@@ -128,7 +128,7 @@ anchors:
       if [ "${CIRRUS_TAG:-}" = "nightly" ]; then
         export NIGHTLY_BUILD="$(date -u +%F)"
       fi
-      cargo make build-release -- "--bin=$BIN" "--target=$TARGET"
+      cargo make build-release "--bin=$BIN" "--target=$TARGET"
     strip_script: $STRIP "target/$TARGET/release/$BIN"
     rename_script: cp "target/$TARGET/release/$BIN" "${BIN}-${TARGET}"
 
@@ -144,14 +144,14 @@ anchors:
       if [ -n "${ALL_FEATURES:-}" ]; then
         args="$args --all-features"
       fi
-      cargo make build-release -- "--lib=$LIB" "--target=$TARGET" $args
+      cargo make build-release "--lib=$LIB" "--target=$TARGET" $args
 
   - &build_bin_windows
     build_script: |
       if ("$env:CIRRUS_TAG" -eq "nightly") {
         $env:NIGHTLY_BUILD = $(Get-Date ([datetime]::UtcNow) -UFormat %Y-%m-%d)
       }
-      cargo make build-release -- "--bin=$env:BIN" "--target=$env:TARGET"
+      cargo make build-release "--bin=$env:BIN" "--target=$env:TARGET"
     rename_script: |
       Copy-Item "target\$env:TARGET\release\$env:BIN.exe" "$env:BIN-$env:TARGET.exe"
 
@@ -167,7 +167,7 @@ anchors:
       if ("$env:ALL_FEATURES") {
         $args = "$args --all-features"
       }
-      cargo make build-release -- "--bin=$env:BIN" "--target=$env:TARGET" $args
+      cargo make build-release "--bin=$env:BIN" "--target=$env:TARGET" $args
 
   - &cleanup_before_upload_cache_unix
     cleanup_before_upload_cache_script: rm -rf "$CARGO_HOME/registry/index"
@@ -223,8 +223,8 @@ test_task:
             image_family: freebsd-12-2
           <<: *base_freebsd
       <<: *install_target_unix
-      test_bin_script: cargo make test-bin -- "--target=$TARGET"
-      test_lib_script: cargo make test-lib -- "--target=$TARGET"
+      test_bin_script: cargo make test-bin "--target=$TARGET"
+      test_lib_script: cargo make test-lib "--target=$TARGET"
       <<: *cleanup_before_upload_cache_unix
     - env:
         TARGET: x86_64-pc-windows-msvc
@@ -232,8 +232,8 @@ test_task:
         image: fnichol/windowsservercore:ltsc2019-vs2019-vctools
       <<: *base_windows
       <<: *install_target_windows
-      test_bin_script: cargo make test-bin -- "--target=$env:TARGET"
-      test_lib_script: cargo make test-lib -- "--target=$env:TARGET"
+      test_bin_script: cargo make test-bin "--target=$env:TARGET"
+      test_lib_script: cargo make test-lib "--target=$env:TARGET"
       <<: *cleanup_before_upload_cache_windows
 
 build_bin_task:
