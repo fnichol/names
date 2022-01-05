@@ -182,7 +182,7 @@ anchors:
 #
 env:
   RUST_VERSION: stable
-  MIN_SUPPORTED_RUST_VERSION: 1.46.0 # Due to pulldown-cmark (const_fn)
+  MIN_SUPPORTED_RUST_VERSION: 1.54.0 # Due to clap v3
 
 check_task:
   name: check

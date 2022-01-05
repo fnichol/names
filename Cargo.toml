@@ -24,7 +24,7 @@ default = ["application"]
 application = ["clap"]
 
 [dependencies]
-clap = { version = "=3.0.0-beta.2", optional = true }
+clap = { version = "3.1.5", optional = true, features = ["derive"] }
 rand = "0.8.4"
 
 [dev-dependencies]
