@@ -4,6 +4,11 @@
 
 ## [Unreleased] - ReleaseDate
 
+### Changed
+
+- upgrade to `clap` version 3
+- update other dependencies via `cargo update`
+
 ## [0.12.0] - 2021-09-12
 
 > **Breaking Change Upgrade Note For Library Users**
