@@ -9,7 +9,7 @@ fn main() {
 }
 
 mod cli {
-    use clap::{AppSettings, Clap};
+    use clap::Parser;
     use names::Name;
 
     const AUTHOR: &str = concat!(env!("CARGO_PKG_AUTHORS"), "\n\n");
@@ -20,8 +20,8 @@ mod cli {
     }
 
     /// A random name generator with results like "delirious-pail"
-    #[derive(Clap, Debug)]
-    #[clap(global_setting(AppSettings::ColoredHelp), author = AUTHOR, version = VERSION)]
+    #[derive(Parser, Debug)]
+    #[clap(author = AUTHOR, version = VERSION)]
     pub(crate) struct Args {
         /// Adds a random number to the name(s)
         #[clap(short, long)]
