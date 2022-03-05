@@ -205,7 +205,7 @@ adding `names` to your dependencies in your project's `Cargo.toml` file:
 
 ```toml
 [dependencies]
-names = { version = "0.12.0", default-features = false }
+names = { version = "0.13.0", default-features = false }
 ```
 
 ### Examples
