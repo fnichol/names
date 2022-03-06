@@ -4,6 +4,13 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.13.0] - 2022-03-05
+
+### Changed
+
+- upgrade to `clap` version 3
+- update other dependencies via `cargo update`
+
 ## [0.12.0] - 2021-09-12
 
 > **Breaking Change Upgrade Note For Library Users**
@@ -63,7 +70,9 @@ The initial release.
 
 <!-- next-url -->
 
-[unreleased]: https://github.com/fnichol/names/compare/v0.12.0...HEAD
+[unreleased]: https://github.com/fnichol/names/compare/v0.13.0...HEAD
+
+[0.13.0]: https://github.com/fnichol/names/compare/v0.12.0...v0.13.0
 
 [0.12.0]: https://github.com/fnichol/names/compare/v0.11.0...v0.12.0
 
