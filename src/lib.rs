@@ -12,7 +12,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! names = { version = "0.13.0", default-features = false }
+//! names = { version = "0.14.0", default-features = false }
 //! ```
 //! ## Examples
 //!
@@ -56,7 +56,7 @@
 //! assert_eq!("imaginary-roll", generator.next().unwrap());
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/names/0.13.1-dev")]
+#![doc(html_root_url = "https://docs.rs/names/0.14.0")]
 #![deny(missing_docs)]
 
 use rand::{rngs::ThreadRng, seq::SliceRandom, Rng};

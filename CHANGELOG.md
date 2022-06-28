@@ -4,6 +4,8 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.14.0] - 2022-06-28
+
 ### Changed
 
 - upgrade to `regex` 1.5.6
@@ -74,7 +76,9 @@ The initial release.
 
 <!-- next-url -->
 
-[unreleased]: https://github.com/fnichol/names/compare/v0.13.0...HEAD
+[unreleased]: https://github.com/fnichol/names/compare/v0.14.0...HEAD
+
+[0.14.0]: https://github.com/fnichol/names/compare/v0.13.0...v0.14.0
 
 [0.13.0]: https://github.com/fnichol/names/compare/v0.12.0...v0.13.0
 

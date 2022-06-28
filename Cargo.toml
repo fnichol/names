@@ -1,6 +1,6 @@
 [package]
 name = "names"
-version = "0.13.1-dev"
+version = "0.14.0"
 authors = ["Fletcher Nichol <fnichol@nichol.ca>"]
 edition = "2018"
 license = "MIT"
