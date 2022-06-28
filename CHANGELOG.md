@@ -4,6 +4,10 @@
 
 ## [Unreleased] - ReleaseDate
 
+### Changed
+
+- upgrade to `regex` 1.5.6
+
 ## [0.13.0] - 2022-03-05
 
 ### Changed
