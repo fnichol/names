@@ -1,6 +1,5 @@
 use names::Name;
 use names::Generator;
-use rand::{rngs::ThreadRng, seq::SliceRandom, Rng};
 
 #[test]
 fn test_name_generator() {
