@@ -1,5 +1,5 @@
-use names::Name;
 use names::Generator;
+use names::Name;
 
 #[test]
 fn test_name_generator() {
