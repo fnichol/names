@@ -67,7 +67,7 @@ If you're ever confused, at least there's help:
 
 ```console
 > names --help
-names 0.11.0
+names 0.15.0
 Fletcher Nichol <fnichol@nichol.ca>
 
 A random name generator with results like "delirious-pail"
@@ -79,9 +79,23 @@ ARGS:
     <AMOUNT>    Number of names to generate [default: 1]
 
 FLAGS:
-    -h, --help       Prints help information
-    -n, --number     Adds a random number to the name(s)
-    -V, --version    Prints version information
+    -h, --help                  Prints help information
+    -n, --number                Adds a random number to the name(s)
+    -s, --strategy <STRATEGY>   Use a different naming strategy
+                                  - Plain* [adjective-noun]
+                                  - Numbered [adjective-noun-number]
+                                  - TitleCase [Adjective Noun]
+                                  - CamelCase [adjectiveNoun]
+                                  - ClassCase [AdjectiveNoun]
+                                  - KebabCase [adjective-noun]
+                                  - TrainCase [Adjective-Noun]
+                                  - TableCase [adjective-noun]
+                                  - SnakeCase [adjective_noun]
+                                  - PascalCase [AdjectiveNoun]
+                                  - SentenceCase [Adjective noun]
+                                  - ScreamingSnakeCase [Adjective_Noun]
+                                 * [default: Plain]
+    -V, --version               Prints version information
 ```
 
 ### Installation

@@ -3,7 +3,13 @@ use names::Generator;
 fn main() {
     let args = cli::parse();
 
-    Generator::with_naming(args.naming())
+    let generated = if args.number {
+        Generator::with_numbers(args.naming())
+    } else {
+        Generator::with_naming(args.naming())
+    };
+
+    generated
         .take(args.amount)
         .for_each(|name| println!("{}", name));
 }
@@ -11,6 +17,7 @@ fn main() {
 mod cli {
     use clap::Parser;
     use names::Name;
+    use std::str::FromStr;
 
     const AUTHOR: &str = concat!(env!("CARGO_PKG_AUTHORS"), "\n\n");
     const VERSION: &str = env!("CARGO_PKG_VERSION");
@@ -27,18 +34,31 @@ mod cli {
         #[clap(short, long)]
         pub(crate) number: bool,
 
+        /// Use a different naming strategy
+        ///  - Plain* [adjective-noun]
+        ///  - Numbered [adjective-noun-number]
+        ///  - TitleCase [Adjective Noun]
+        ///  - CamelCase [adjectiveNoun]
+        ///  - ClassCase [AdjectiveNoun]
+        ///  - KebabCase [adjective-noun]
+        ///  - TrainCase [Adjective-Noun]
+        ///  - TableCase [adjective-noun]
+        ///  - SnakeCase [adjective_noun]
+        ///  - PascalCase [AdjectiveNoun]
+        ///  - SentenceCase [Adjective noun]
+        ///  - ScreamingSnakeCase [Adjective_Noun]
+        ///*
+        #[clap(short, long, default_value = "Plain", verbatim_doc_comment)]
+        pub(crate) strategy: String,
+
         /// Number of names to generate
-        #[clap(default_value = "1", rename_all = "screaming_snake_case")]
+        #[clap(default_value = "1")]
         pub(crate) amount: usize,
     }
 
     impl Args {
         pub(crate) fn naming(&self) -> Name {
-            if self.number {
-                Name::Numbered
-            } else {
-                Name::default()
-            }
+            Name::from_str(&self.strategy).unwrap()
         }
     }
 }

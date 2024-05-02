@@ -4,6 +4,41 @@
 
 ## [Unreleased] - ReleaseDate
 
+## [0.15.0] - 2024-05-01
+
+> **Breaking Change Upgrade Note For Library Users**
+>
+> Due to the addition of additional naming strategies. You now need to pass `true` or `false` to the `Generator::new()` method.
+> 
+> ```rust
+> <!-- No Numbering -->
+> Generator::new(ADJECTIVES, NOUNS, naming, false)
+> 
+> <!-- Numbering -->
+> Generator::new(ADJECTIVES, NOUNS, naming, true)
+> ```
+ 
+- New naming strategies types added to complment `Name:Plain` and `Name::Numbered`. The new namging stratgies are as followed:
+
+  - Name::Plain **adjective-noun**
+  - Name::Numbered  **adjective-noun-number**
+  - Name::TitleCase **Adjective Noun**
+  - Name::CamelCase **adjectiveNoun**
+  - Name::ClassCase **AdjectiveNoun**
+  - Name::KebabCase **adjective-noun**
+  - Name::TrainCase **Adjective-Noun**
+  - Name::TableCase **adjective-noun**
+  - Name::SnakeCase **adjective_noun**
+  - Name::PascalCase **AdjectiveNoun**
+  - Name::SentenceCase **Adjective noun**
+  - Name::ScreamingSnakeCase **Adjective_Noun**
+
+
+### Changed
+
+- upgrade to `regex` 1.10.4
+- added `Inflector` 0.11.4, used with the naming strategy `to_*_case()` logic.
+
 ## [0.14.0] - 2022-06-28
 
 ### Changed
@@ -77,13 +112,9 @@ The initial release.
 <!-- next-url -->
 
 [unreleased]: https://github.com/fnichol/names/compare/v0.14.0...HEAD
-
 [0.14.0]: https://github.com/fnichol/names/compare/v0.13.0...v0.14.0
-
 [0.13.0]: https://github.com/fnichol/names/compare/v0.12.0...v0.13.0
-
 [0.12.0]: https://github.com/fnichol/names/compare/v0.11.0...v0.12.0
-
 [0.11.0]: https://github.com/fnichol/names/compare/v0.10.0...v0.11.0
 [0.10.0]: https://github.com/fnichol/names/compare/v0.9.0...v0.10.0
 [0.9.0]: https://github.com/fnichol/names/compare/f852f53...v0.9.0

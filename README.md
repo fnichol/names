@@ -205,7 +205,7 @@ adding `names` to your dependencies in your project's `Cargo.toml` file:
 
 ```toml
 [dependencies]
-names = { version = "0.14.0", default-features = false }
+names = { version = "0.15.0-dev", default-features = false }
 ```
 
 ### Examples
@@ -232,6 +232,7 @@ use names::{Generator, Name};
 let mut generator = Generator::with_naming(Name::Numbered);
 println!("Your project is: {}", generator.next().unwrap());
 // #=> "Your project is: pushy-pencil-5602"
+
 ```
 
 #### Example: with custom dictionaries
@@ -245,9 +246,24 @@ use names::{Generator, Name};
 
 let adjectives = &["imaginary"];
 let nouns = &["roll"];
-let mut generator = Generator::new(adjectives, nouns, Name::default());
+let mut generator = Generator::new(adjectives, nouns, Name::default(), false);
 
 assert_eq!("imaginary-roll", generator.next().unwrap());
+```
+
+#### Example: with custom dictionaries and custom naming strategy
+
+As above, if you would like to use a custom naming convenetion. You can supply a
+strategy:
+
+```rust
+use names::{Generator, Name};
+
+let adjectives = &["true"];
+let nouns = &["truth"];
+let mut generator = Generator::new(adjectives, nouns, Name::CamelCase, false);
+
+assert_eq!("trueTruth", generator.next().unwrap());
 ```
 
 ## CI Status

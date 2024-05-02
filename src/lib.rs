@@ -12,7 +12,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! names = { version = "0.14.0", default-features = false }
+//! names = { version = "0.15.0", default-features = false }
 //! ```
 //! ## Examples
 //!
@@ -56,10 +56,12 @@
 //! assert_eq!("imaginary-roll", generator.next().unwrap());
 //! ```
 
-#![doc(html_root_url = "https://docs.rs/names/0.14.1-dev")]
+#![doc(html_root_url = "https://docs.rs/names/0.15.0-dev")]
 #![deny(missing_docs)]
 
+use inflector::Inflector;
 use rand::{rngs::ThreadRng, seq::SliceRandom, Rng};
+use std::str::FromStr;
 
 /// List of English adjective words
 pub const ADJECTIVES: &[&str] = &include!(concat!(env!("OUT_DIR"), "/adjectives.rs"));
@@ -68,17 +70,54 @@ pub const ADJECTIVES: &[&str] = &include!(concat!(env!("OUT_DIR"), "/adjectives.
 pub const NOUNS: &[&str] = &include!(concat!(env!("OUT_DIR"), "/nouns.rs"));
 
 /// A naming strategy for the `Generator`
+#[derive(Debug, PartialEq, Default)]
 pub enum Name {
-    /// This represents a plain naming strategy of the form `"ADJECTIVE-NOUN"`
+    /// This represents a Title cased naming strategy in the form of `"adjective-noun"`
     Plain,
-    /// This represents a naming strategy with a random number appended to the
-    /// end, of the form `"ADJECTIVE-NOUN-NUMBER"`
+    /// This represents a Title cased naming strategy in the form of `"adjective-noun-number"`
     Numbered,
+    /// This represents a Title cased naming strategy in the form of `"Adjective Noun"`
+    TitleCase,
+    /// This represents a Camel cased naming strategy in the form of `"adjectiveNoun"`
+    CamelCase,
+    /// This represents a Class cased naming strategy in the form of `"AdjectiveNoun"`
+    ClassCase,
+    /// This represents a Kebab cased naming strategy in the form of `"adjective-noun"`
+    #[default]
+    KebabCase,
+    /// This represents a Train cased naming strategy in the form of `"Adjective-Noun"`
+    TrainCase,
+    /// This represents a Screaming Snake cased naming strategy in the form of `"Adjective_Noun"`
+    ScreamingSnakeCase,
+    /// This represents a Table cased naming strategy in the form of `"adjective-noun"`
+    TableCase,
+    /// This represents a Sentence cased naming strategy in the form of `"Adjective noun"`
+    SentenceCase,
+    /// This represents a Snake cased naming strategy in the form of `"adjective_noun"`
+    SnakeCase,
+    /// This represents a Pascal cased naming strategy in the form of `"AdjectiveNoun"`
+    PascalCase,
 }
 
-impl Default for Name {
-    fn default() -> Self {
-        Name::Plain
+impl FromStr for Name {
+    type Err = ();
+
+    fn from_str(input: &str) -> Result<Name, Self::Err> {
+        match input {
+            "Plain" => Ok(Name::Plain),
+            "Numbered" => Ok(Name::Numbered),
+            "TitleCase" => Ok(Name::TitleCase),
+            "CamelCase" => Ok(Name::CamelCase),
+            "ClassCase" => Ok(Name::ClassCase),
+            "KebabCase" => Ok(Name::KebabCase),
+            "TrainCase" => Ok(Name::TrainCase),
+            "ScreamingSnakeCase" => Ok(Name::ScreamingSnakeCase),
+            "TableCase" => Ok(Name::TableCase),
+            "SentenceCase" => Ok(Name::SentenceCase),
+            "SnakeCase" => Ok(Name::SnakeCase),
+            "PascalCase" => Ok(Name::PascalCase),
+            _ => Err(()),
+        }
     }
 }
 
@@ -91,6 +130,7 @@ pub struct Generator<'a> {
     adjectives: &'a [&'a str],
     nouns: &'a [&'a str],
     naming: Name,
+    numbered: bool,
     rng: ThreadRng,
 }
 
@@ -105,16 +145,23 @@ impl<'a> Generator<'a> {
     /// let adjectives = &["sassy"];
     /// let nouns = &["clocks"];
     /// let naming = Name::Plain;
+    /// let numbered = false
     ///
-    /// let mut generator = Generator::new(adjectives, nouns, naming);
+    /// let mut generator = Generator::new(adjectives, nouns, naming, numbered);
     ///
     /// assert_eq!("sassy-clocks", generator.next().unwrap());
     /// ```
-    pub fn new(adjectives: &'a [&'a str], nouns: &'a [&'a str], naming: Name) -> Self {
+    pub fn new(
+        adjectives: &'a [&'a str],
+        nouns: &'a [&'a str],
+        naming: Name,
+        numbered: bool,
+    ) -> Self {
         Generator {
             adjectives,
             nouns,
             naming,
+            numbered,
             rng: ThreadRng::default(),
         }
     }
@@ -130,13 +177,27 @@ impl<'a> Generator<'a> {
     /// println!("My new name is: {}", generator.next().unwrap());
     /// ```
     pub fn with_naming(naming: Name) -> Self {
-        Generator::new(ADJECTIVES, NOUNS, naming)
+        Generator::new(ADJECTIVES, NOUNS, naming, false)
+    }
+
+    /// Construct and returns a default `Generator<'a>` containing a large
+    /// collection of adjectives and nouns
+    ///
+    /// ```
+    /// use names::{Generator, Name};
+    ///
+    /// let mut generator = Generator::with_numbers(Name::Plain);
+    ///
+    /// println!("My new name is: {}", generator.next().unwrap());
+    /// ```
+    pub fn with_numbers(naming: Name) -> Self {
+        Generator::new(ADJECTIVES, NOUNS, naming, true)
     }
 }
 
 impl<'a> Default for Generator<'a> {
     fn default() -> Self {
-        Generator::new(ADJECTIVES, NOUNS, Name::default())
+        Generator::new(ADJECTIVES, NOUNS, Name::default(), false)
     }
 }
 
@@ -147,9 +208,27 @@ impl<'a> Iterator for Generator<'a> {
         let adj = self.adjectives.choose(&mut self.rng).unwrap();
         let noun = self.nouns.choose(&mut self.rng).unwrap();
 
+        let generated = if self.numbered {
+            format!("{} {} {:04}", adj, noun, rand_num(&mut self.rng))
+        } else {
+            format!("{} {}", adj, noun)
+        };
+
         Some(match self.naming {
-            Name::Plain => format!("{}-{}", adj, noun),
-            Name::Numbered => format!("{}-{}-{:04}", adj, noun, rand_num(&mut self.rng)),
+            Name::Plain => generated.to_kebab_case(),
+            Name::Numbered => {
+                format!("{}-{}-{:04}", adj, noun, rand_num(&mut self.rng)).to_kebab_case()
+            }
+            Name::TitleCase => generated.to_title_case(),
+            Name::CamelCase => generated.to_camel_case(),
+            Name::ClassCase => generated.to_class_case(),
+            Name::KebabCase => generated.to_kebab_case(),
+            Name::TrainCase => generated.to_train_case(),
+            Name::ScreamingSnakeCase => generated.to_screaming_snake_case(),
+            Name::TableCase => generated.to_table_case(),
+            Name::SentenceCase => generated.to_sentence_case(),
+            Name::SnakeCase => generated.to_snake_case(),
+            Name::PascalCase => generated.to_pascal_case(),
         })
     }
 }
