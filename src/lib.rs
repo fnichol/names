@@ -68,19 +68,16 @@ pub const ADJECTIVES: &[&str] = &include!(concat!(env!("OUT_DIR"), "/adjectives.
 pub const NOUNS: &[&str] = &include!(concat!(env!("OUT_DIR"), "/nouns.rs"));
 
 /// A naming strategy for the `Generator`
+#[derive(Default)]
 pub enum Name {
     /// This represents a plain naming strategy of the form `"ADJECTIVE-NOUN"`
+    #[default]
     Plain,
     /// This represents a naming strategy with a random number appended to the
     /// end, of the form `"ADJECTIVE-NOUN-NUMBER"`
     Numbered,
 }
 
-impl Default for Name {
-    fn default() -> Self {
-        Name::Plain
-    }
-}
 
 /// A random name generator which combines an adjective, a noun, and an
 /// optional number
@@ -134,13 +131,13 @@ impl<'a> Generator<'a> {
     }
 }
 
-impl<'a> Default for Generator<'a> {
+impl Default for Generator<'_> {
     fn default() -> Self {
         Generator::new(ADJECTIVES, NOUNS, Name::default())
     }
 }
 
-impl<'a> Iterator for Generator<'a> {
+impl Iterator for Generator<'_> {
     type Item = String;
 
     fn next(&mut self) -> Option<String> {
