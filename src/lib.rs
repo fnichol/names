@@ -59,7 +59,7 @@
 #![doc(html_root_url = "https://docs.rs/names/0.14.1-dev")]
 #![deny(missing_docs)]
 
-use rand::{rngs::ThreadRng, seq::SliceRandom, Rng};
+use rand::{rngs::ThreadRng, seq::IndexedRandom, Rng};
 
 /// List of English adjective words
 pub const ADJECTIVES: &[&str] = &include!(concat!(env!("OUT_DIR"), "/adjectives.rs"));
@@ -155,5 +155,5 @@ impl<'a> Iterator for Generator<'a> {
 }
 
 fn rand_num(rng: &mut ThreadRng) -> u16 {
-    rng.gen_range(1..10000)
+    rng.random_range(1..10000)
 }
