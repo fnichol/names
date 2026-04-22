@@ -25,7 +25,7 @@ application = ["clap"]
 
 [dependencies]
 clap = { version = "3.1.5", optional = true, features = ["derive"] }
-rand = "0.8.4"
+rand = "0.8.6"
 
 [dev-dependencies]
 version-sync = "0.9.1"
